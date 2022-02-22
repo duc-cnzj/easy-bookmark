@@ -34,7 +34,6 @@ jobs:
             bookmark-linux-arm64
 
   build-darwin:
-    needs: [test]
     name: Build Go Binary macos amd64
     runs-on: macos-latest
     steps:
