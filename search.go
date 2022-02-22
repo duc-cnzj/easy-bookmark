@@ -26,17 +26,6 @@ func init() {
 				c = append(c, n)
 			}
 		}
-
-		markM.Range(func(m *mark) {
-			ss := strings.Split(line, " ")
-			if len(ss) < 1 {
-				return
-			}
-			if strings.Contains(m.Name, ss[len(ss)-1]) {
-				ss[len(ss) - 1] = m.key()
-				c = append(c, strings.Join(ss, " "))
-			}
-		})
 		return
 	})
 }
@@ -90,34 +79,54 @@ func search(ch chan struct{}) {
 
 			if strings.HasPrefix(q, "show ") {
 				id := strings.TrimSpace(strings.TrimLeft(q, "show "))
-				get := markM.Get(id)
-				if get == nil {
-					Warnf("not found %s", id)
+				atoi, err := strconv.Atoi(id)
+				if err != nil {
 					return nil
 				}
-				Debug(get.Html)
+				for i, s := range lastResult {
+					if i == atoi - 1 {
+						get := markM.Get(s)
+						if get == nil {
+							Warnf("not found %s", s)
+							return nil
+						}
+						Debug(get.Html)
+						Info(get.key())
+						break
+					}
+				}
+
 				return nil
 			}
 			if strings.HasPrefix(q, "refetch ") {
 				id := strings.TrimSpace(strings.TrimLeft(q, "refetch "))
-				get := markM.Get(id)
-				if get == nil {
-					Warnf("not found %s", id)
+				atoi, err := strconv.Atoi(id)
+				if err != nil {
 					return nil
 				}
-
-				old := get.Html
-				get.Html = httpClient.GetResponseString(get.Url)
-				Debugf("refetch %s length: %d", get.key(), len(get.Html))
-				if old != get.Html {
-					markM.Add(get)
-					index.Index(get.key(), get)
-					var res []*mark
-					markM.Range(func(m *mark) {
-						res = append(res, m)
-					})
-					syncFile(res)
+				for i, s := range lastResult {
+					if i == atoi - 1 {
+						get := markM.Get(s)
+						if get == nil {
+							Warnf("not found %s", s)
+							return nil
+						}
+						old := get.Html
+						get.Html = httpClient.GetResponseString(get.Url)
+						Debugf("refetch %s length: %d %d", get.key(), len(get.Html), len(old))
+						if old != get.Html {
+							markM.Add(get)
+							index.Index(get.key(), get)
+							var res []*mark
+							markM.Range(func(m *mark) {
+								res = append(res, m)
+							})
+							syncFile(res)
+						}
+						break
+					}
 				}
+
 				return nil
 			}
 			query := bleve.NewQueryStringQuery(q)
@@ -137,7 +146,9 @@ func search(ch chan struct{}) {
 	}
 }
 
+var lastResult []string
 func fmtResult(sr *bleve.SearchResult) string {
+	lastResult = nil
 	rv := ""
 	if sr.Total > 0 {
 		if sr.Request.Size > 0 {
@@ -151,6 +162,7 @@ func fmtResult(sr *bleve.SearchResult) string {
 					length = "loading..."
 				}
 				rv += fmt.Sprintf("%3d. %s (%f, content-length: %v)\n", i+sr.Request.From+1, color.GreenString(hit.ID), hit.Score, length)
+				lastResult = append(lastResult, hit.ID)
 				if len(hit.Fragments) > 0 {
 					bf := &bytes.Buffer{}
 
