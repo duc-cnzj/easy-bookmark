@@ -2,7 +2,7 @@ name: CI
 on:
   push:
 jobs:
-  build-bin:
+  build-linux:
     name: Build Go Binary linux amd64
     runs-on: ubuntu-latest
     steps:
