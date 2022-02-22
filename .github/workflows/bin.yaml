@@ -40,11 +40,6 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Download frontend files
-        uses: actions/download-artifact@v2
-        with:
-          name: frontend_dist_files
-          path: frontend/build
       - uses: actions/cache@v2
         with:
           path: ~/go/pkg/mod
