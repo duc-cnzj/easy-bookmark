@@ -18,10 +18,6 @@ build:
 build_linux_amd64:
 	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o bookmark-linux-amd64 .
 
-.PHONY: build_linux_arm64
-build_linux_arm64:
-	CC=aarch64-linux-gnu-gcc CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -ldflags="-w -s -extldflags '-static'" -o bookmark-linux-arm64 .
-
 .PHONY: build_drawin_amd64
 build_drawin_amd64:
 	CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-w -s" -o bookmark-darwin-amd64 .

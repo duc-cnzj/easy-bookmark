@@ -50,14 +50,7 @@ jobs:
         with:
           go-version: '1.17'
       - run: |
-          make build_drawin_arm64
           make build_drawin_amd64
-      - name: upload bookmark-darwin-arm64
-        uses: actions/upload-artifact@v2
-        with:
-          name: bookmark-darwin-arm64
-          path: |
-            bookmark-darwin-arm64
       - name: upload bookmark-darwin-amd64
         uses: actions/upload-artifact@v2
         with:
