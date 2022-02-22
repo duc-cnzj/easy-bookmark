@@ -10,7 +10,9 @@ import (
 	"time"
 
 	"github.com/blevesearch/bleve/v2"
+	_ "github.com/duc-cnzj/easy-bookmark/jieba"
 	"github.com/schollz/progressbar/v3"
+	"github.com/yanyiwu/gojieba"
 )
 
 const systemBookmarkFilePath = `/Users/duc/Library/Application Support/Google/Chrome/Default/Bookmarks`
@@ -55,7 +57,7 @@ func initBookmark(ch chan struct{}) {
 			go func(m *mark) {
 				defer wg.Done()
 				if m.Html != "" || (m.Code != 429 && m.Code != 0) {
-					markChan<-&mark{
+					markChan <- &mark{
 						Name: m.Name,
 						Url:  m.Url,
 						Html: m.Html,
@@ -77,7 +79,7 @@ func initBookmark(ch chan struct{}) {
 				} else {
 					//Debug(err.Error())
 				}
-				markChan<-&mark{
+				markChan <- &mark{
 					Name: m.Name,
 					Url:  m.Url,
 					Html: m.Html,
@@ -92,6 +94,26 @@ func initBookmark(ch chan struct{}) {
 
 		Info("开始创建索引文件")
 		mapping := bleve.NewIndexMapping()
+
+		err = mapping.AddCustomTokenizer("gojieba",
+			map[string]interface{}{
+				"dictpath":     gojieba.DICT_PATH,
+				"hmmpath":      gojieba.HMM_PATH,
+				"userdictpath": gojieba.USER_DICT_PATH,
+				"idf":          gojieba.IDF_PATH,
+				"stop_words":   gojieba.STOP_WORDS_PATH,
+				"type":         "gojieba",
+			},
+		)
+		fatalError(err)
+		err = mapping.AddCustomAnalyzer("gojieba",
+			map[string]interface{}{
+				"type":      "gojieba",
+				"tokenizer": "gojieba",
+			},
+		)
+		fatalError(err)
+		mapping.DefaultAnalyzer = "gojieba"
 
 		index, err := bleve.New(bleveDir, mapping)
 		fatalError(err)

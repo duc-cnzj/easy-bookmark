@@ -9,6 +9,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/peterh/liner v1.2.2
 	github.com/schollz/progressbar/v3 v3.8.6
+	github.com/yanyiwu/gojieba v1.1.2
 )
 
 require (
