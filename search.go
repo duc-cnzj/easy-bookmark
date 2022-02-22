@@ -20,6 +20,25 @@ var line = liner.NewLiner()
 
 func init() {
 	line.SetCtrlCAborts(true)
+	line.SetCompleter(func(line string) (c []string) {
+		for _, n := range []string{"refetch", "show"} {
+			if strings.HasPrefix(n, strings.ToLower(line)) {
+				c = append(c, n)
+			}
+		}
+
+		markM.Range(func(m *mark) {
+			ss := strings.Split(line, " ")
+			if len(ss) < 1 {
+				return
+			}
+			if strings.Contains(m.Name, ss[len(ss)-1]) {
+				ss[len(ss) - 1] = m.key()
+				c = append(c, strings.Join(ss, " "))
+			}
+		})
+		return
+	})
 }
 
 func search(ch chan struct{}) {
