@@ -1,4 +1,5 @@
 package jieba
+
 import (
 	"errors"
 
@@ -6,8 +7,7 @@ import (
 	"github.com/blevesearch/bleve/v2/registry"
 )
 
-type JiebaAnalyzer struct {
-}
+type JiebaAnalyzer struct{}
 
 func analyzerConstructor(config map[string]interface{}, cache *registry.Cache) (*analysis.Analyzer, error) {
 	tokenizerName, ok := config["tokenizer"].(string)
