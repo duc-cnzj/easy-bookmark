@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
@@ -8,42 +9,21 @@ import (
 	"github.com/blevesearch/bleve/v2/search/highlight/highlighter/ansi"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
-	"github.com/peterh/liner"
 	"log"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 var topNRegexp = regexp.MustCompile(`-top(\d+)`)
-var line = liner.NewLiner()
-
-func init() {
-	line.SetCtrlCAborts(true)
-	line.SetCompleter(func(line string) (c []string) {
-		for _, n := range []string{"refetch", "show"} {
-			if strings.HasPrefix(n, strings.ToLower(line)) {
-				c = append(c, n)
-			}
-		}
-		return
-	})
-}
 
 func search(ch chan struct{}) {
 	for {
 		err := func() error {
-			q, err := line.Prompt("Please enter what you want to search：")
-			if err != nil {
-				if errors.Is(err, liner.ErrPromptAborted) {
-					close(ch)
-					return err
-				}
-				fatalError(err)
-				return err
-			}
-
-			line.AppendHistory(q)
+			fmt.Println("search: ")
+			fmt.Printf("=> ")
+			q, _ := bufio.NewReader(os.Stdin).ReadString('\n')
 			q = strings.TrimRight(q, "\n")
 			index, err := bleve.Open(bleveDir)
 			fatalError(err)

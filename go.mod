@@ -8,9 +8,8 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/peterh/liner v1.2.2
 	github.com/schollz/progressbar/v3 v3.8.6
-	github.com/yanyiwu/gojieba v1.1.2
+	github.com/yanyiwu/gojieba v1.1.3-0.20220131084353-a30c1dcd29bb
 )
 
 require (

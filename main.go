@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -24,7 +26,16 @@ func main() {
 	flag.Parse()
 	initHttpClient()
 
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
+
 	ch := make(chan struct{})
+	go func() {
+		select {
+		case <-done:
+			close(ch)
+		}
+	}()
 	inited := false
 	_, jsonFileErr := os.Stat(jsonFile)
 	_, bleveErr := os.Stat(bleveDir)
@@ -41,7 +52,6 @@ func main() {
 	go search(ch)
 	select {
 	case <-ch:
-		line.Close()
 	}
 	time.Sleep(300 * time.Millisecond)
 	Infof("ByeBye!")
