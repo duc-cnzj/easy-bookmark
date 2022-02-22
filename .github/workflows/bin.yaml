@@ -21,10 +21,10 @@ jobs:
       - run: |
           make build_drawin_amd64
           make build_drawin_arm64
-      - name: upload bookmark-darwin-amd64
+      - name: upload bookmark
         uses: actions/upload-artifact@v2
         with:
-          name: bookmark-darwin-amd64
+          name: bookmark
           path: |
             bookmark-darwin-amd64
             bookmark-darwin-arm64
@@ -36,15 +36,10 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v2
-      - name: Download darwin amd64 bookmark
+      - name: Download darwin bookmark
         uses: actions/download-artifact@v2
         with:
-          name: bookmark-darwin-amd64
-          path: /tmp
-      - name: Download darwin arm64 bookmark
-        uses: actions/download-artifact@v2
-        with:
-          name: bookmark-darwin-arm64
+          name: bookmark
           path: /tmp
       - uses: ncipollo/release-action@v1
         with:
