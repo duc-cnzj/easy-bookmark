@@ -10,6 +10,12 @@ const (
 	systemBookmarkFilePath = `.config/google-chrome/Default/Bookmarks`
 	bleveDir = "/tmp/cache.bleve"
 	jsonFile = "/tmp/bookmark.json"
+
+	dictPath = "/tmp/easy-bookmark/jieba.dict.utf8"
+	hmm = "/tmp/easy-bookmark/hmm_model.utf8"
+	userDict = "/tmp/easy-bookmark/user.dict.utf8"
+	idf = "/tmp/easy-bookmark/idf.utf8"
+	stopWords = "/tmp/easy-bookmark/stop_words.utf8"
 )
 
 func getSystemBookmarkFilePath() string {
