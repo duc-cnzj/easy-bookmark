@@ -34,16 +34,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v2
-      - name: Download linux arm64 bookmark
-        uses: actions/download-artifact@v2
-        with:
-          name: bookmark-linux-arm64
-          path: /tmp
-      - name: Download linux amd64 bookmark
-        uses: actions/download-artifact@v2
-        with:
-          name: bookmark-linux-amd64
-          path: /tmp
       - name: Download darwin amd64 bookmark
         uses: actions/download-artifact@v2
         with:
