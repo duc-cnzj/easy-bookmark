@@ -25,6 +25,7 @@ func init() {
 func main() {
 	flag.Parse()
 	initHttpClient()
+	InitDict()
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGTERM)

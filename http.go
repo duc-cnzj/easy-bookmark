@@ -47,7 +47,11 @@ func (c *client) Get(url string) (resp *http.Response, err error) {
 	var reader io.ReadCloser
 	switch do.Header.Get("Content-Encoding") {
 	case "gzip":
-		reader, _ = gzip.NewReader(do.Body)
+		reader, err = gzip.NewReader(do.Body)
+		if err != nil {
+			do.Body.Close()
+			return nil, err
+		}
 		do.Body = reader
 	default:
 	}

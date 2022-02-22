@@ -12,7 +12,6 @@ import (
 	"github.com/blevesearch/bleve/v2"
 	_ "github.com/duc-cnzj/easy-bookmark/jieba"
 	"github.com/schollz/progressbar/v3"
-	"github.com/yanyiwu/gojieba"
 )
 
 
@@ -97,11 +96,11 @@ func initBookmark(ch chan struct{}) {
 
 		err = mapping.AddCustomTokenizer("gojieba",
 			map[string]interface{}{
-				"dictpath":     gojieba.DICT_PATH,
-				"hmmpath":      gojieba.HMM_PATH,
-				"userdictpath": gojieba.USER_DICT_PATH,
-				"idf":          gojieba.IDF_PATH,
-				"stop_words":   gojieba.STOP_WORDS_PATH,
+				"dictpath":     dictPath,
+				"hmmpath":      hmm,
+				"userdictpath": userDict,
+				"idf":          idf,
+				"stop_words":   stopWords,
 				"type":         "gojieba",
 			},
 		)
