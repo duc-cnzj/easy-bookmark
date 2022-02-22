@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"github.com/blevesearch/bleve/v2"
 	"github.com/blevesearch/bleve/v2/search/highlight/highlighter/ansi"
 	"github.com/fatih/color"
+	"github.com/olekukonko/tablewriter"
 	"github.com/peterh/liner"
 	"log"
 	"regexp"
@@ -130,17 +132,25 @@ func fmtResult(sr *bleve.SearchResult) string {
 					length = "loading..."
 				}
 				rv += fmt.Sprintf("%3d. %s (%f, content-length: %v)\n", i+sr.Request.From+1, color.GreenString(hit.ID), hit.Score, length)
-				for fragmentField, fragments := range hit.Fragments {
-					rv += fmt.Sprintf("\t%s\n", fragmentField)
-					for _, fragment := range fragments {
-						rv += fmt.Sprintf("\t\t%s\n", fragment)
+				if len(hit.Fragments) > 0 {
+					bf := &bytes.Buffer{}
+
+					table := tablewriter.NewWriter(bf)
+					table.SetHeader([]string{"#", "type", "matched data"})
+					table.SetColMinWidth(0, 2)
+					table.SetColMinWidth(1, 6)
+					table.SetColMinWidth(2, 100)
+					table.SetRowLine(true)
+					i := 0
+					for fragmentField, fragments := range hit.Fragments {
+						for _, fragment := range fragments {
+							i++
+							table.Append([]string{strconv.Itoa(i), fragmentField, fragment})
+						}
 					}
-				}
-				for otherFieldName, otherFieldValue := range hit.Fields {
-					if _, ok := hit.Fragments[otherFieldName]; !ok {
-						rv += fmt.Sprintf("\t%s\n", otherFieldName)
-						rv += fmt.Sprintf("\t\t%v\n", otherFieldValue)
-					}
+
+					table.Render()
+					rv += fmt.Sprintf("%s", bf.String())
 				}
 			}
 		} else {
@@ -148,18 +158,6 @@ func fmtResult(sr *bleve.SearchResult) string {
 		}
 	} else {
 		rv = "No matches"
-	}
-	if len(sr.Facets) > 0 {
-		rv += fmt.Sprintf("Facets:\n")
-		for fn, f := range sr.Facets {
-			rv += fmt.Sprintf("%s(%d)\n", fn, f.Total)
-			for _, t := range f.Terms.Terms() {
-				rv += fmt.Sprintf("\t%s(%d)\n", t.Term, t.Count)
-			}
-			if f.Other != 0 {
-				rv += fmt.Sprintf("\tOther(%d)\n", f.Other)
-			}
-		}
 	}
 	return rv
 }
