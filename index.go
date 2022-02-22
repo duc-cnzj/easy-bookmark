@@ -92,7 +92,7 @@ func initBookmark(ch chan struct{}) {
 			close(markChan)
 		}()
 
-		Info("开始创建索引文件")
+		Info("creating index file")
 		mapping := bleve.NewIndexMapping()
 
 		err = mapping.AddCustomTokenizer("gojieba",
