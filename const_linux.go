@@ -1,5 +1,10 @@
 package main
 
+import (
+	"github.com/mitchellh/go-homedir"
+	"path/filepath"
+)
+
 const (
 	systemBookmarkFilePath = `.config/google-chrome/Default/Bookmarks`
 	bleveDir = "/tmp/cache.bleve"
