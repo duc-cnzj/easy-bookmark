@@ -6,11 +6,6 @@ import (
 	"time"
 )
 
-const (
-	bleveDir = "/tmp/cache.bleve"
-	jsonFile = "/tmp/bookmark.json"
-)
-
 var (
 	watch     bool
 	reindex   bool

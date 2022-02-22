@@ -15,7 +15,6 @@ import (
 	"github.com/yanyiwu/gojieba"
 )
 
-const systemBookmarkFilePath = `/Users/duc/Library/Application Support/Google/Chrome/Default/Bookmarks`
 
 func initBookmark(ch chan struct{}) {
 	initDone := make(chan struct{}, 1)
@@ -24,7 +23,8 @@ func initBookmark(ch chan struct{}) {
 			Infof("init use: %s", time.Since(t))
 		}(time.Now())
 		// 获取用户书签
-		file, err := os.ReadFile(systemBookmarkFilePath)
+
+		file, err := os.ReadFile(getSystemBookmarkFilePath())
 		fatalError(err)
 		var data Bookmarks
 		fatalError(json.Unmarshal(file, &data))

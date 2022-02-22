@@ -57,7 +57,7 @@ func watchChange(done <-chan struct{}, inited bool) {
 		}
 	}()
 
-	err = watcher.Add(systemBookmarkFilePath)
+	err = watcher.Add(getSystemBookmarkFilePath())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -69,7 +69,7 @@ func watchChange(done <-chan struct{}, inited bool) {
 
 func doChange(markM *markMap) {
 	// 获取用户书签
-	file, err := os.ReadFile(systemBookmarkFilePath)
+	file, err := os.ReadFile(getSystemBookmarkFilePath())
 	fatalError(err)
 	var data Bookmarks
 	fatalError(json.Unmarshal(file, &data))

@@ -6,6 +6,7 @@ require (
 	github.com/blevesearch/bleve/v2 v2.3.0
 	github.com/fatih/color v1.13.0
 	github.com/fsnotify/fsnotify v1.5.1
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/peterh/liner v1.2.2
 	github.com/schollz/progressbar/v3 v3.8.6
