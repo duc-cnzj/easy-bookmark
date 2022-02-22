@@ -63,7 +63,6 @@ func watchChange(done <-chan struct{}, inited bool) {
 	}
 	select {
 	case <-done:
-		Debug("watch exit")
 		return
 	}
 }
