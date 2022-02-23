@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"time"
 )
+
 var httpClient *client
 
 type client struct {
@@ -65,9 +66,9 @@ func initHttpClient() {
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: true,
 		},
-		MaxIdleConns:       50,
-		MaxIdleConnsPerHost:  50,
-
+		MaxIdleConns:        50,
+		MaxIdleConnsPerHost: 50,
+		TLSHandshakeTimeout: 0,
 	}
 	if httpProxy != "" {
 		Infof("use http proxy: '%s'", httpProxy)

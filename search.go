@@ -5,15 +5,16 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/blevesearch/bleve/v2"
-	"github.com/blevesearch/bleve/v2/search/highlight/highlighter/ansi"
-	"github.com/fatih/color"
-	"github.com/olekukonko/tablewriter"
 	"log"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/blevesearch/bleve/v2"
+	"github.com/blevesearch/bleve/v2/search/highlight/highlighter/ansi"
+	"github.com/fatih/color"
+	"github.com/olekukonko/tablewriter"
 )
 
 var topNRegexp = regexp.MustCompile(`-top(\d+)`)
@@ -25,6 +26,10 @@ func search(ch chan struct{}) {
 			fmt.Printf("=> ")
 			q, _ := bufio.NewReader(os.Stdin).ReadString('\n')
 			q = strings.TrimRight(q, "\n")
+			if q == "" {
+				showHelp()
+				return nil
+			}
 			index, err := bleve.Open(bleveDir)
 			fatalError(err)
 			defer index.Close()
@@ -64,7 +69,7 @@ func search(ch chan struct{}) {
 					return nil
 				}
 				for i, s := range lastResult {
-					if i == atoi - 1 {
+					if i == atoi-1 {
 						get := markM.Get(s)
 						if get == nil {
 							Warnf("not found %s", s)
@@ -85,7 +90,7 @@ func search(ch chan struct{}) {
 					return nil
 				}
 				for i, s := range lastResult {
-					if i == atoi - 1 {
+					if i == atoi-1 {
 						get := markM.Get(s)
 						if get == nil {
 							Warnf("not found %s", s)
@@ -126,7 +131,23 @@ func search(ch chan struct{}) {
 	}
 }
 
+func showHelp() {
+	color.Cyan(`Command:
+  showall:
+        show all bookmarks info. eg: "showall"
+  show $id:
+        show one bookmark. eg: "show 1"
+  refetch $id:
+        refetch bookmark html content. eg: "refetch 1"
+  -h:
+        show search hits. eg: "book -h"
+  -topN:
+        limit results. eg: "book -top1"
+`)
+}
+
 var lastResult []string
+
 func fmtResult(sr *bleve.SearchResult) string {
 	lastResult = nil
 	rv := ""

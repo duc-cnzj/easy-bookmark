@@ -14,7 +14,6 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-
 func initBookmark(ch chan struct{}) {
 	initDone := make(chan struct{}, 1)
 	go func() {
@@ -46,49 +45,70 @@ func initBookmark(ch chan struct{}) {
 			}
 		}
 
-		wg := &sync.WaitGroup{}
-		markChan := make(chan *mark, 1000)
-		var result = make([]*mark, 0)
+		var (
+			wg       = &sync.WaitGroup{}
+			markChan = make(chan *mark, 1000)
+			result   = make([]*mark, 0)
+			queue    = make(chan *mark, 100)
+		)
 
-		for i := range marks {
-			m := marks[i]
+		for i := 0; i < 20; i++ {
 			wg.Add(1)
-			go func(m *mark) {
+			go func() {
 				defer wg.Done()
-				if m.Html != "" || (m.Code != 429 && m.Code != 0) {
-					markChan <- &mark{
-						Name: m.Name,
-						Url:  m.Url,
-						Html: m.Html,
-						Code: m.Code,
+				for {
+					select {
+					case m, ok := <-queue:
+						if !ok {
+							return
+						}
+						func() {
+							if m.Html != "" || (m.Code != 429 && m.Code != 0) {
+								markChan <- &mark{
+									Name: m.Name,
+									Url:  m.Url,
+									Html: m.Html,
+									Code: m.Code,
+								}
+								return
+							}
+							var code int
+							get, err := httpClient.Get(m.Url)
+							if err == nil {
+								defer get.Body.Close()
+								code = get.StatusCode
+								readAll, _ := io.ReadAll(get.Body)
+								if len(readAll) > 0 || (get.StatusCode >= 200 && get.StatusCode < 400) {
+									m.Html = string(readAll)
+								} else {
+									//Debugf("name: %s, code: %d, url: %s", m.Name, get.StatusCode, m.Url)
+								}
+							} else {
+								//Debug(err.Error())
+							}
+							markChan <- &mark{
+								Name: m.Name,
+								Url:  m.Url,
+								Html: m.Html,
+								Code: code,
+							}
+						}()
 					}
-					return
 				}
-				var code int
-				get, err := httpClient.Get(m.Url)
-				if err == nil {
-					defer get.Body.Close()
-					code = get.StatusCode
-					readAll, _ := io.ReadAll(get.Body)
-					if len(readAll) > 0 || (get.StatusCode >= 200 && get.StatusCode < 400) {
-						m.Html = string(readAll)
-					} else {
-						//Debugf("name: %s, code: %d, url: %s", m.Name, get.StatusCode, m.Url)
-					}
-				} else {
-					//Debug(err.Error())
-				}
-				markChan <- &mark{
-					Name: m.Name,
-					Url:  m.Url,
-					Html: m.Html,
-					Code: code,
-				}
-			}(m)
+			}()
 		}
+
 		go func() {
 			wg.Wait()
 			close(markChan)
+			//Debug("markChan closed")
+		}()
+		go func() {
+			for i := range marks {
+				queue <- marks[i]
+			}
+			close(queue)
+			//Debug("queue closed")
 		}()
 
 		Info("creating index file")

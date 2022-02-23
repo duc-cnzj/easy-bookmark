@@ -1,6 +1,5 @@
 package jieba
 
-
 import (
 	"errors"
 
