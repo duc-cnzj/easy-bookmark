@@ -46,9 +46,9 @@ func search(ch chan struct{}) {
 			}
 			size := 10
 			hl := false
-			if strings.Contains(q, "-h") {
+			if strings.Contains(q, " -h") {
 				hl = true
-				q = strings.ReplaceAll(q, "-h", "")
+				q = strings.ReplaceAll(q, " -h", "")
 			}
 
 			submatch := topNRegexp.FindAllStringSubmatch(q, -1)
