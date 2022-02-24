@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 
@@ -9,20 +10,29 @@ import (
 
 var (
 	tmpDir = os.TempDir()
-	systemBookmarkFilePath = `\AppData\Local\Google\Chrome\User Data\Default\Bookmarks`
-	bleveDir               = filepath.Join(tmpDir + "easy-bookmark", "cache.bleve")
-	jsonFile               = filepath.Join(tmpDir + "easy-bookmark", "bookmark.json")
 
-	dictPath  = filepath.Join(tmpDir + "easy-bookmark", "jieba.dict.utf8")
-	hmm       = filepath.Join(tmpDir + "easy-bookmark", "hmm_model.utf8")
-	userDict  = filepath.Join(tmpDir + "easy-bookmark", "user.dict.utf8")
-	idf       = filepath.Join(tmpDir + "easy-bookmark", "idf.utf8")
-	stopWords = filepath.Join(tmpDir + "easy-bookmark", "stop_words.utf8")
+	systemBookmarkFilePath         = `\AppData\Local\Google\Chrome\User Data\Default\Bookmarks`
+	systemBookmarkFilePathFallback = `C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Default\Bookmarks`
+
+	bleveDir = filepath.Join(tmpDir+"easy-bookmark", "cache.bleve")
+	jsonFile = filepath.Join(tmpDir+"easy-bookmark", "bookmark.json")
+
+	dictPath  = filepath.Join(tmpDir+"easy-bookmark", "jieba.dict.utf8")
+	hmm       = filepath.Join(tmpDir+"easy-bookmark", "hmm_model.utf8")
+	userDict  = filepath.Join(tmpDir+"easy-bookmark", "user.dict.utf8")
+	idf       = filepath.Join(tmpDir+"easy-bookmark", "idf.utf8")
+	stopWords = filepath.Join(tmpDir+"easy-bookmark", "stop_words.utf8")
 )
 
 func getSystemBookmarkFilePath() string {
 	dir, _ := homedir.Dir()
-	return filepath.Join(dir, systemBookmarkFilePath)
+	userBookmark := filepath.Join(dir, systemBookmarkFilePath)
+	_, err := os.Stat(userBookmark)
+	if errors.Is(err, os.ErrNotExist) {
+		return systemBookmarkFilePathFallback
+	}
+
+	return userBookmark
 }
 
 func InitDict() {
