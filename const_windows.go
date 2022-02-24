@@ -14,14 +14,14 @@ var (
 	systemBookmarkFilePath         = `\AppData\Local\Google\Chrome\User Data\Default\Bookmarks`
 	systemBookmarkFilePathFallback = `C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Default\Bookmarks`
 
-	bleveDir = filepath.Join(tmpDir+"easy-bookmark", "cache.bleve")
-	jsonFile = filepath.Join(tmpDir+"easy-bookmark", "bookmark.json")
+	bleveDir = filepath.Join(tmpDir, "easy-bookmark", "cache.bleve")
+	jsonFile = filepath.Join(tmpDir, "easy-bookmark", "bookmark.json")
 
-	dictPath  = filepath.Join(tmpDir+"easy-bookmark", "jieba.dict.utf8")
-	hmm       = filepath.Join(tmpDir+"easy-bookmark", "hmm_model.utf8")
-	userDict  = filepath.Join(tmpDir+"easy-bookmark", "user.dict.utf8")
-	idf       = filepath.Join(tmpDir+"easy-bookmark", "idf.utf8")
-	stopWords = filepath.Join(tmpDir+"easy-bookmark", "stop_words.utf8")
+	dictPath  = filepath.Join(tmpDir, "easy-bookmark", "jieba.dict.utf8")
+	hmm       = filepath.Join(tmpDir, "easy-bookmark", "hmm_model.utf8")
+	userDict  = filepath.Join(tmpDir, "easy-bookmark", "user.dict.utf8")
+	idf       = filepath.Join(tmpDir, "easy-bookmark", "idf.utf8")
+	stopWords = filepath.Join(tmpDir, "easy-bookmark", "stop_words.utf8")
 )
 
 func getSystemBookmarkFilePath() string {
