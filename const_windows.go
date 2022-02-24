@@ -46,6 +46,6 @@ func InitDict() {
 }
 
 func getFile(name string) []byte {
-	file, _ := dict.ReadFile(filepath.Join("dict", filepath.Base(name)))
+	file, _ := dict.ReadFile("dict/" + filepath.Base(name))
 	return file
 }
