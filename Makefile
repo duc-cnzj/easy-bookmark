@@ -24,4 +24,4 @@ build_drawin_arm64:
 
 .PHONY: build_windows
 build_windows:
-	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -ldflags="-w -s" -o bookmark-windowns-amd64.exe .
+	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -ldflags='-w -s -extldflags "-static"' -o bookmark-windows.exe .

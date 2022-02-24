@@ -49,7 +49,7 @@ jobs:
         with:
           name: bookmark-windows
           path: |
-            bookmark-windowns-amd64.exe
+            bookmark-windows.exe
 
   release:
     needs: [build-darwin, build-windows]
