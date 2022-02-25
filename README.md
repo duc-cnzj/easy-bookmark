@@ -7,6 +7,12 @@ download from [release](https://github.com/DuC-cnZj/ChromeBookmarksSearch/releas
 chmod +x bookmark-darwin-amd64
 ```
 
+or
+
+```shell
+go install github.com/duc-cnzj/easy-bookmark@latest
+```
+
 ## Usage
 
 ```shell
