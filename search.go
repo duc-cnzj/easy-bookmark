@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	_ "embed"
 	"errors"
 	"fmt"
 	"log"
@@ -19,7 +20,12 @@ import (
 
 var topNRegexp = regexp.MustCompile(`-top(\d+)`)
 
+//go:embed logo.txt
+var logo string
+
 func search(ch chan struct{}) {
+	color.Cyan(logo)
+	showHelp()
 	for {
 		err := func() error {
 			fmt.Println("search: ")
