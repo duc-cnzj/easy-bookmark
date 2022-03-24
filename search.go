@@ -90,7 +90,7 @@ func search(ch chan struct{}) {
 				return nil
 			}
 			if strings.HasPrefix(q, "refetch ") {
-				id := strings.TrimSpace(strings.TrimLeft(q, "refetch "))
+				id := strings.TrimSpace(q[len("refetch "):])
 				atoi, err := strconv.Atoi(id)
 				if err != nil {
 					return nil
@@ -188,7 +188,7 @@ func fmtResult(sr *bleve.SearchResult) string {
 					}
 
 					table.Render()
-					rv += fmt.Sprintf("%s", bf.String())
+					rv += bf.String()
 				}
 			}
 		} else {

@@ -1,6 +1,6 @@
 module github.com/duc-cnzj/easy-bookmark
 
-go 1.17
+go 1.18
 
 require (
 	github.com/blevesearch/bleve/v2 v2.3.0

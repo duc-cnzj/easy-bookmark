@@ -1,0 +1,6 @@
+run:
+  skip-dirs:
+    - dict
+linters:
+  disable:
+    - errcheck

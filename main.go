@@ -32,10 +32,8 @@ func main() {
 
 	ch := make(chan struct{})
 	go func() {
-		select {
-		case <-done:
-			close(ch)
-		}
+		<-done
+		close(ch)
 	}()
 	inited := false
 	_, jsonFileErr := os.Stat(jsonFile)
@@ -51,9 +49,7 @@ func main() {
 		go watchChange(ch, inited)
 	}
 	go search(ch)
-	select {
-	case <-ch:
-	}
+	<-ch
 	time.Sleep(300 * time.Millisecond)
 	Infof("ByeBye!")
 }

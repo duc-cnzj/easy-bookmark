@@ -1,6 +1,6 @@
 .PHONY: vet
-vet:
-	go vet ./...
+lint:
+	golangci-lint run
 
 .PHONY: fmt
 fmt:

@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -61,10 +62,7 @@ func watchChange(done <-chan struct{}, inited bool) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	select {
-	case <-done:
-		return
-	}
+	<-done
 }
 
 func doChange(markM *markMap) {
@@ -136,6 +134,7 @@ func syncFile(res []*mark) {
 	defer openFile.Close()
 	openFile.Write(result)
 	Infof("\nwrite to %s", jsonFile)
+	fmt.Printf("=> ")
 }
 
 type markMap struct {

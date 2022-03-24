@@ -22,9 +22,9 @@ func Infof(fmt string, v ...interface{}) {
 	color.Green(fmt, v...)
 }
 
-func Warn(v ...interface{}) {
-	color.Yellow(strings.Repeat("%v ", len(v)), v...)
-}
+//func Warn(v ...interface{}) {
+//	color.Yellow(strings.Repeat("%v ", len(v)), v...)
+//}
 
 func Warnf(fmt string, v ...interface{}) {
 	color.Yellow(fmt, v...)

@@ -56,44 +56,34 @@ func initBookmark(ch chan struct{}) {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				for {
-					select {
-					case m, ok := <-queue:
-						if !ok {
-							return
-						}
-						func() {
-							if m.Html != "" || (m.Code != 429 && m.Code != 0) {
-								markChan <- &mark{
-									Name: m.Name,
-									Url:  m.Url,
-									Html: m.Html,
-									Code: m.Code,
-								}
-								return
-							}
-							var code int
-							get, err := httpClient.Get(m.Url)
-							if err == nil {
-								defer get.Body.Close()
-								code = get.StatusCode
-								readAll, _ := io.ReadAll(get.Body)
-								if len(readAll) > 0 || (get.StatusCode >= 200 && get.StatusCode < 400) {
-									m.Html = string(readAll)
-								} else {
-									//Debugf("name: %s, code: %d, url: %s", m.Name, get.StatusCode, m.Url)
-								}
-							} else {
-								//Debug(err.Error())
-							}
+				for m := range queue {
+					func() {
+						if m.Html != "" || (m.Code != 429 && m.Code != 0) {
 							markChan <- &mark{
 								Name: m.Name,
 								Url:  m.Url,
 								Html: m.Html,
-								Code: code,
+								Code: m.Code,
 							}
-						}()
-					}
+							return
+						}
+						var code int
+						get, err := httpClient.Get(m.Url)
+						if err == nil {
+							defer get.Body.Close()
+							code = get.StatusCode
+							readAll, _ := io.ReadAll(get.Body)
+							if len(readAll) > 0 || (get.StatusCode >= 200 && get.StatusCode < 400) {
+								m.Html = string(readAll)
+							}
+						}
+						markChan <- &mark{
+							Name: m.Name,
+							Url:  m.Url,
+							Html: m.Html,
+							Code: code,
+						}
+					}()
 				}
 			}()
 		}
