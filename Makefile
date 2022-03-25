@@ -1,4 +1,4 @@
-.PHONY: vet
+.PHONY: lint
 lint:
 	golangci-lint run
 
